@@ -1,29 +1,14 @@
 import express from 'express';
 import { connectDB } from "./config/db.js"
-import User from "./models/User.js"
+import userRoutes from "./routes/userRoute.js"
 
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
+
 app.use(express.json());
+app.use("/api/users", userRoutes);
 
-app.post('/api/users', async(req, res) => {
-    const user = req.body;
-    const newUser = new User(user);
-    try {
-        await newUser.save();
-        res.status(201).json({success: true, data: newUser});
-    } catch (error){
-        console.error("Error in creating user event: ", error.message);
-        res.status(500).json({success: false, message: "Server Error"})
-    }
-
-})
-
-app.get('/', (req, res) => {
-    res.send('Hello World!')
-});
-
-app.listen(port, () => {
+app.listen(PORT, () => {
     connectDB();
-    console.log(`Server started at http://localhost:${port}`);
+    console.log(`Server started at http://localhost:${PORT}`);
 });
